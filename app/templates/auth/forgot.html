@@ -1,0 +1,2 @@
+{% extends 'base.html' %}{% from 'macros.html' import csrf %}{% block content %}<section class="center-card"><span>RECUPERAR ACESSO</span><h1>Esqueceu a senha?</h1><p>Informe seu e-mail. A resposta é neutra para proteger as contas cadastradas.</p><form method="post">{{ csrf() }}<label>E-mail<input type="email" name="email" required></label><button class="btn wide">Enviar instruções</button></form></section>{% endblock %}
+

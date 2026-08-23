@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="TRÓPICO — streetwear brasileiro, feito no ritmo do país.">
+  <title>{% block title %}TRÓPICO{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+  <div class="announcement">FRETE GRÁTIS ACIMA DE R$ 399 · BRASIL EM CADA FIO</div>
+  <header class="site-header">
+    <a class="brand" href="{{ url_for('shop.home') }}">TRÓPICO<span>●</span></a>
+    <button class="menu-toggle" aria-label="Abrir menu" data-menu-toggle>☰</button>
+    <nav data-menu>
+      <a href="{{ url_for('shop.catalog') }}">Novidades</a>
+      <a href="{{ url_for('shop.catalog', categoria='camisetas') }}">Camisetas</a>
+      <a href="{{ url_for('shop.catalog', categoria='moletons') }}">Moletons</a>
+      <a href="{{ url_for('shop.catalog', categoria='acessorios') }}">Acessórios</a>
+    </nav>
+    <div class="header-actions">
+      <form class="search" action="{{ url_for('shop.catalog') }}"><input name="q" aria-label="Buscar" placeholder="Buscar"><button>⌕</button></form>
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('auth.profile') }}" aria-label="Conta">◯</a>
+        {% if current_user.is_admin %}<a href="{{ url_for('admin.dashboard') }}">Admin</a>{% endif %}
+      {% else %}<a href="{{ url_for('auth.login') }}">Entrar</a>{% endif %}
+      <a class="cart-link" href="{{ url_for('cart.view_cart') if current_user.is_authenticated else url_for('auth.login') }}">Sacola <b>{{ cart_count }}</b></a>
+    </div>
+  </header>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}<div class="flash-stack">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+  {% endwith %}
+  <main>{% block content %}{% endblock %}</main>
+  <footer>
+    <div><a class="brand inverse" href="{{ url_for('shop.home') }}">TRÓPICO<span>●</span></a><p>Moda brasileira feita com presença.<br>Do nosso clima para o seu cotidiano.</p></div>
+    <div><h4>Explore</h4><a href="{{ url_for('shop.catalog') }}">Catálogo</a><a href="{{ url_for('orders.my_orders') if current_user.is_authenticated else url_for('auth.login') }}">Meus pedidos</a><a href="{{ url_for('auth.profile') if current_user.is_authenticated else url_for('auth.register') }}">Minha conta</a></div>
+    <div><h4>Atendimento</h4><span>Seg–Sex, 9h–18h</span><span>oi@tropico.com.br</span><span>Trocas e devoluções</span></div>
+    <div><h4>Receba o sol primeiro</h4><p>Lançamentos, histórias e vantagens.</p><form class="newsletter"><input type="email" placeholder="seu@email.com"><button>→</button></form></div>
+    <small>© 2026 TRÓPICO. Feito no Brasil.</small>
+  </footer>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
+

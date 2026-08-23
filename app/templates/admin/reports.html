@@ -1,0 +1,2 @@
+{% extends 'admin/layout.html' %}{% block admin_content %}<div class="admin-title"><div><span>INTELIGÊNCIA</span><h1>Relatórios</h1></div></div><section class="admin-panel"><h2>Posição atual de estoque por produto</h2><div class="bars">{% for name, stock in best_sellers %}<div><span>{{ name }}</span><i style="width:{{ [stock, 100]|min }}%"></i><b>{{ stock }}</b></div>{% endfor %}</div><p class="notice">O relatório de mais vendidos será populado conforme os pedidos forem realizados.</p></section>{% endblock %}
+

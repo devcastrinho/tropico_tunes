@@ -1,0 +1,8 @@
+{% macro csrf() %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endmacro %}
+{% macro product_card(product) %}
+<article class="product-card">
+  <a class="product-image" href="{{ url_for('shop.product_detail', slug=product.slug) }}"><img src="{{ product.main_image }}" alt="{{ product.name }}" loading="lazy"><span>{{ 'NOVO' if product.featured else 'TRÓPICO' }}</span></a>
+  <div><p>{{ product.category.name }}</p><a href="{{ url_for('shop.product_detail', slug=product.slug) }}">{{ product.name }}</a><strong>R$ {{ '%.2f'|format(product.price)|replace('.', ',') }}</strong></div>
+</article>
+{% endmacro %}
+

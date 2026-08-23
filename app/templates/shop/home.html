@@ -1,0 +1,12 @@
+{% extends 'base.html' %}{% from 'macros.html' import product_card %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy"><span>COLEÇÃO 01 — ORIGEM</span><h1>Vista o clima.<br>Carregue o Brasil.</h1><p>Streetwear desenhado sob o sol, entre concreto, mata e mar.</p><a class="btn light" href="{{ url_for('shop.catalog') }}">Descobrir coleção <b>→</b></a></div>
+  <div class="hero-art"><div class="sun"></div><div class="hero-word">ORIGEM</div><p>100%<br>BRASILEIRA</p></div>
+</section>
+<section class="section"><div class="section-heading"><div><span>ESCOLHAS DO TRÓPICO</span><h2>Peças em destaque</h2></div><a href="{{ url_for('shop.catalog') }}">Ver tudo →</a></div><div class="product-grid">{% for product in featured %}{{ product_card(product) }}{% endfor %}</div></section>
+<section class="manifesto"><div class="manifesto-photo"></div><div><span>DE ONDE A GENTE VEM</span><h2>Roupa com sotaque, atitude sem fronteira.</h2><p>A TRÓPICO nasce do encontro entre a energia das ruas e a força da natureza brasileira. Criamos peças essenciais, duráveis e livres de estação.</p><a class="text-link" href="{{ url_for('shop.catalog') }}">CONHEÇA NOSSA HISTÓRIA →</a></div></section>
+<section class="section"><div class="section-heading"><div><span>ACABOU DE CHEGAR</span><h2>Novos ritmos</h2></div></div><div class="product-grid">{% for product in newest %}{{ product_card(product) }}{% endfor %}</div></section>
+<section class="values"><div><b>01</b><h3>Feito aqui</h3><p>Produção e criação brasileiras.</p></div><div><b>02</b><h3>Menos, melhor</h3><p>Peças versáteis e duradouras.</p></div><div><b>03</b><h3>Para todo corpo</h3><p>Modelagens livres e inclusivas.</p></div></section>
+{% endblock %}
+

@@ -1,0 +1,2 @@
+{% extends 'admin/layout.html' %}{% block admin_content %}<div class="admin-title"><div><span>COMUNIDADE</span><h1>Clientes</h1></div></div><section class="admin-panel table-wrap"><table><thead><tr><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Desde</th><th>Pedidos</th></tr></thead><tbody>{% for customer in customers %}<tr><td>{{ customer.name }}</td><td>{{ customer.email }}</td><td>{{ customer.phone or '—' }}</td><td>{{ customer.created_at.strftime('%d/%m/%Y') }}</td><td>{{ customer.orders|length }}</td></tr>{% endfor %}</tbody></table></section>{% endblock %}
+
