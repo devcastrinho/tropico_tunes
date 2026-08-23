@@ -2,6 +2,14 @@
 
 E-commerce e sistema administrativo para uma marca brasileira de streetwear. O MVP conecta HTML/CSS/JavaScript puro ao Flask e a um banco relacional, com catálogo, variantes, estoque, carrinho persistente, checkout, pagamento simulado, pedidos e gestão.
 
+> O terminal serve apenas para iniciar o servidor. Depois disso, a loja e o painel são utilizados pelo navegador em `http://127.0.0.1:5000`.
+
+## Como usar
+
+O guia completo para instalação, acesso à loja, checkout e painel administrativo está em **[COMO_USAR.md](COMO_USAR.md)**.
+
+No Windows, após concluir a primeira instalação, também é possível iniciar o sistema dando dois cliques em **`iniciar.bat`**. A janela aberta deve permanecer em execução enquanto o site estiver sendo utilizado.
+
 ## Tecnologias
 
 - Python 3.11+, Flask e Blueprints
@@ -70,11 +78,19 @@ flask --app run.py db upgrade
 
 ## Execução
 
+### Opção 1 — atalho no Windows
+
+Dê dois cliques em `iniciar.bat` e abra <http://127.0.0.1:5000>.
+
+### Opção 2 — terminal
+
 ```powershell
 flask --app run.py run --debug
 ```
 
-Acesse `http://127.0.0.1:5000`.
+Acesse <http://127.0.0.1:5000>. O terminal precisa permanecer aberto porque ele mantém o servidor em funcionamento. Para encerrar, pressione `Ctrl + C`.
+
+> O GitHub Pages não é compatível com Flask/Python. Ele pode armazenar o código, mas a aplicação precisa de uma hospedagem que execute Python e forneça acesso ao banco de dados.
 
 ## Credenciais de demonstração
 
@@ -98,4 +114,3 @@ Troque as senhas antes de qualquer implantação real.
 - Layout responsivo para desktop, tablet e celular
 
 Integrações reais de OAuth, gateway e transportadora devem substituir os adaptadores simulados quando existirem credenciais válidas.
-
