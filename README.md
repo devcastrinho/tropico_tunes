@@ -1,5 +1,34 @@
 # TRÓPICO
 
+## Versão estática para GitHub Pages
+
+A raiz deste repositório agora contém uma versão estática e funcional da loja, pronta para o GitHub Pages. Ela preserva o mesmo front-end e oferece catálogo, busca, filtros, página de produto, variações, sacola persistente, cupom `BEMVINDO10`, checkout demonstrativo, conta local e histórico de pedidos.
+
+Como o GitHub Pages não executa banco de dados nem Python, os dados da sacola, da conta e dos pedidos ficam no `localStorage` do navegador. O checkout é apenas uma demonstração e não realiza cobranças ou envios reais.
+
+Para visualizar localmente:
+
+```powershell
+python -m http.server 8765 --bind 127.0.0.1
+```
+
+Depois, abra <http://127.0.0.1:8765/>.
+
+Arquivos principais da versão estática:
+
+```text
+index.html              # página inicial
+produtos/               # catálogo, busca, filtros e ordenação
+produto/                # detalhes, tamanhos e cores
+carrinho/               # sacola persistente
+checkout/               # cupom e pedido demonstrativo
+conta/                  # perfil local e histórico de pedidos
+assets/js/store.js      # dados e comportamento da loja
+assets/css/             # estilos específicos da versão estática
+```
+
+---
+
 E-commerce e sistema administrativo para uma marca brasileira de streetwear. O MVP conecta HTML/CSS/JavaScript puro ao Flask e a um banco relacional, com catálogo, variantes, estoque, carrinho persistente, checkout, pagamento simulado, pedidos e gestão.
 
 > O terminal serve apenas para iniciar o servidor. Depois disso, a loja e o painel são utilizados pelo navegador em `http://127.0.0.1:5000`.
@@ -90,7 +119,7 @@ flask --app run.py run --debug
 
 Acesse <http://127.0.0.1:5000>. O terminal precisa permanecer aberto porque ele mantém o servidor em funcionamento. Para encerrar, pressione `Ctrl + C`.
 
-> O GitHub Pages não é compatível com Flask/Python. Ele pode armazenar o código, mas a aplicação precisa de uma hospedagem que execute Python e forneça acesso ao banco de dados.
+> O GitHub Pages publica a versão estática da raiz do repositório. O sistema Flask abaixo continua disponível para desenvolvimento local quando forem necessários banco de dados e painel administrativo.
 
 ## Credenciais de demonstração
 

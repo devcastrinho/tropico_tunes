@@ -1,5 +1,17 @@
 # Como usar o TRÓPICO
 
+## Loja estática (GitHub Pages)
+
+A versão estática não exige instalação do Flask. Para testá-la no computador, execute na pasta do projeto:
+
+```powershell
+python -m http.server 8765 --bind 127.0.0.1
+```
+
+Abra <http://127.0.0.1:8765/>. A sacola, os dados da conta e os pedidos demonstrativos são mantidos somente no navegador. Use o cupom `BEMVINDO10` no checkout. Nenhuma cobrança ou entrega real é criada.
+
+---
+
 O terminal é usado somente para iniciar o servidor Flask. Depois que o servidor estiver ligado, todo o sistema é utilizado normalmente pelo navegador.
 
 ## Uso rápido no Windows
@@ -55,5 +67,4 @@ flask --app run.py run --debug
 - O pagamento e o frete são simulações de demonstração.
 - Nunca informe dados reais de cartão.
 - O servidor de desenvolvimento do Flask é adequado apenas para uso local.
-- O GitHub Pages não executa Python/Flask. Para publicar o sistema na internet é necessário usar uma hospedagem compatível com aplicações Python e banco de dados.
-
+- O GitHub Pages publica a loja estática da raiz do repositório. Para usar o painel administrativo, autenticação real, banco de dados ou pagamentos reais, ainda é necessária uma hospedagem compatível com Python/Flask.
