@@ -2,7 +2,7 @@
 
 ## Versão estática para GitHub Pages
 
-A raiz deste repositório agora contém uma versão estática e funcional da loja, pronta para o GitHub Pages. Ela preserva o mesmo front-end e oferece catálogo, busca, filtros, página de produto, variações, sacola persistente, cupom `BEMVINDO10`, checkout demonstrativo, conta local e histórico de pedidos.
+A raiz deste repositório agora contém uma versão estática e funcional da loja, pronta para o GitHub Pages. Ela preserva o mesmo front-end e oferece catálogo, busca, filtros, página de produto, variações, sacola persistente, cupom `BEMVINDO10`, checkout demonstrativo, conta local, histórico de pedidos e modo claro/escuro.
 
 Como o GitHub Pages não executa banco de dados nem Python, os dados da sacola, da conta e dos pedidos ficam no `localStorage` do navegador. O checkout é apenas uma demonstração e não realiza cobranças ou envios reais.
 

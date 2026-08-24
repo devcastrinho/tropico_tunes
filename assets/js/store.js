@@ -8,15 +8,18 @@ const PRODUCTS = [
   {id:'bone-brisa',name:'Boné Brisa',category:'Acessórios',categorySlug:'acessorios',description:'Boné de seis painéis com bordado minimalista.',price:119.90,featured:false,image:'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=900&q=80'},
   {id:'camisa-amazonia',name:'Camisa Amazônia',category:'Camisas',categorySlug:'camisas',description:'Viscose fluida com padronagem botânica discreta.',price:249.90,featured:false,image:'https://images.unsplash.com/photo-1603252109303-2751441dd157?auto=format&fit=crop&w=900&q=80'},
   {id:'regata-mare',name:'Regata Maré',category:'Camisetas',categorySlug:'camisetas',description:'Regata canelada de algodão brasileiro.',price:109.90,featured:false,image:'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?auto=format&fit=crop&w=900&q=80'},
-  {id:'ecobag-raizes',name:'Ecobag Raízes',category:'Acessórios',categorySlug:'acessorios',description:'Lona de algodão com alças reforçadas.',price:79.90,featured:false,image:'https://images.unsplash.com/photo-1597484662317-9bd7bdda2907?auto=format&fit=crop&w=900&q=80'}
+  {id:'ecobag-raizes',name:'Ecobag Raízes',category:'Acessórios',categorySlug:'acessorios',description:'Lona de algodão com alças reforçadas.',price:79.90,featured:false,image:'assets/images/ecobag-raizes.png'}
 ];
 
 const COLORS=[{name:'Preto',hex:'#171717'},{name:'Off-white',hex:'#EDE9DF'},{name:'Verde Mata',hex:'#244A35'}];
 const SIZES=['P','M','G','GG'];
-const STORAGE={cart:'tropico_cart_v1',profile:'tropico_profile_v1',orders:'tropico_orders_v1'};
+const STORAGE={cart:'tropico_cart_v1',profile:'tropico_profile_v1',orders:'tropico_orders_v1',theme:'tropico_theme_v1'};
 const scriptUrl=new URL(document.currentScript.src);
 const BASE=new URL('../../',scriptUrl);
 const route=(path='')=>new URL(path,BASE).href;
+PRODUCTS.forEach(product=>{if(!/^https?:/i.test(product.image))product.image=route(product.image)});
+const preferredTheme=localStorage.getItem(STORAGE.theme)||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+document.documentElement.dataset.theme=preferredTheme;
 const money=value=>Number(value).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}};
 const write=(key,value)=>localStorage.setItem(key,JSON.stringify(value));
@@ -33,7 +36,7 @@ function toast(message,type='success'){
   setTimeout(()=>item.remove(),3600);
 }
 
-function productCard(product,badge='TRÓPICO'){
+function productCard(product,badge='TROPICO'){
   return `<article class="product-card" data-product-card data-name="${escapeHtml(product.name.toLowerCase())}" data-category="${product.categorySlug}" data-price="${product.price}">
     <a class="product-image" href="${route(`produto/?id=${product.id}`)}"><img src="${product.image}" alt="${escapeHtml(product.name)}" loading="lazy"><span>${badge}</span></a>
     <div><p>${product.category}</p><a href="${route(`produto/?id=${product.id}`)}">${product.name}</a><strong>${money(product.price)}</strong></div>
@@ -46,23 +49,25 @@ function renderChrome(){
   if(header) header.innerHTML=`
     <div class="announcement">FRETE GRÁTIS ACIMA DE R$ 399 · BRASIL EM CADA FIO</div>
     <header class="site-header">
-      <a class="brand" href="${route()}">TRÓPICO<span>●</span></a>
+      <a class="brand" href="${route()}">TROPICO<span>●</span></a>
       <button class="menu-toggle" aria-label="Abrir menu" data-menu-toggle>☰</button>
       <nav data-menu><a href="${route('produtos/')}">Novidades</a><a href="${route('produtos/?categoria=camisetas')}">Camisetas</a><a href="${route('produtos/?categoria=moletons')}">Moletons</a><a href="${route('produtos/?categoria=acessorios')}">Acessórios</a></nav>
       <div class="header-actions">
         <form class="search" data-header-search><input name="q" aria-label="Buscar" placeholder="Buscar"><button aria-label="Pesquisar">⌕</button></form>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="${document.documentElement.dataset.theme==='dark'?'Ativar modo claro':'Ativar modo noturno'}" title="Alternar tema"><span data-theme-icon>${document.documentElement.dataset.theme==='dark'?'☀':'☾'}</span></button>
         <a class="account-link" href="${route('conta/')}">${profile.name?escapeHtml(profile.name.split(' ')[0]):'Entrar'}</a>
         <a class="cart-link" href="${route('carrinho/')}">Sacola <b data-cart-count>${cartCount()}</b></a>
       </div>
     </header>`;
   const footer=document.querySelector('[data-site-footer]');
   if(footer) footer.innerHTML=`<footer>
-    <div><a class="brand inverse" href="${route()}">TRÓPICO<span>●</span></a><p>Moda brasileira feita com presença.<br>Do nosso clima para o seu cotidiano.</p></div>
+    <div><a class="brand inverse" href="${route()}">TROPICO<span>●</span></a><p>Moda brasileira feita com presença.<br>Do nosso clima para o seu cotidiano.</p></div>
     <div><h4>Explore</h4><a href="${route('produtos/')}">Catálogo</a><a href="${route('conta/#pedidos')}">Meus pedidos</a><a href="${route('conta/')}">Minha conta</a></div>
     <div><h4>Atendimento</h4><span>Seg–Sex, 9h–18h</span><a href="mailto:oi@tropico.com.br">oi@tropico.com.br</a><span>Trocas e devoluções</span></div>
     <div><h4>Receba o sol primeiro</h4><p>Lançamentos, histórias e vantagens.</p><form class="newsletter" data-newsletter><input type="email" required placeholder="seu@email.com" aria-label="Seu e-mail"><button aria-label="Cadastrar e-mail">→</button></form></div>
-    <small>© 2026 TRÓPICO. Feito no Brasil.</small></footer>`;
+    <small>© 2026 TROPICO. Feito no Brasil.</small></footer>`;
   document.querySelector('[data-menu-toggle]')?.addEventListener('click',()=>document.querySelector('[data-menu]')?.classList.toggle('open'));
+  document.querySelector('[data-theme-toggle]')?.addEventListener('click',()=>{const next=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=next;localStorage.setItem(STORAGE.theme,next);document.querySelector('[data-theme-icon]').textContent=next==='dark'?'☀':'☾';document.querySelector('[data-theme-toggle]').setAttribute('aria-label',next==='dark'?'Ativar modo claro':'Ativar modo noturno')});
   document.querySelector('[data-header-search]')?.addEventListener('submit',event=>{event.preventDefault();const q=new FormData(event.currentTarget).get('q');location.href=route(`produtos/?q=${encodeURIComponent(q)}`)});
   document.querySelector('[data-newsletter]')?.addEventListener('submit',event=>{event.preventDefault();event.currentTarget.innerHTML='<span>Bem-vindo ao nosso clima.</span>';toast('Cadastro realizado. Você vai receber as novidades!')});
 }
@@ -73,8 +78,8 @@ function renderHome(root){
   const featured=PRODUCTS.filter(item=>item.featured).slice(0,4);
   const newest=[...PRODUCTS].reverse().slice(0,4);
   root.innerHTML=`<section class="hero"><div class="hero-copy"><span>COLEÇÃO 01 — ORIGEM</span><h1>Vista o clima.<br>Carregue o Brasil.</h1><p>Streetwear desenhado sob o sol, entre concreto, mata e mar.</p><a class="btn light" href="${route('produtos/')}">Descobrir coleção <b>→</b></a></div><div class="hero-art"><div class="sun"></div><div class="hero-word">ORIGEM</div><p>100%<br>BRASILEIRA</p></div></section>
-  <section class="section"><div class="section-heading"><div><span>ESCOLHAS DO TRÓPICO</span><h2>Peças em destaque</h2></div><a href="${route('produtos/')}">Ver tudo →</a></div><div class="product-grid">${featured.map(p=>productCard(p,'NOVO')).join('')}</div></section>
-  <section class="manifesto"><div class="manifesto-photo"></div><div><span>DE ONDE A GENTE VEM</span><h2>Roupa com sotaque, atitude sem fronteira.</h2><p>A TRÓPICO nasce do encontro entre a energia das ruas e a força da natureza brasileira. Criamos peças essenciais, duráveis e livres de estação.</p><a class="text-link" href="${route('produtos/')}">CONHEÇA NOSSA HISTÓRIA →</a></div></section>
+  <section class="section"><div class="section-heading"><div><span>ESCOLHAS DO TROPICO</span><h2>Peças em destaque</h2></div><a href="${route('produtos/')}">Ver tudo →</a></div><div class="product-grid">${featured.map(p=>productCard(p,'NOVO')).join('')}</div></section>
+  <section class="manifesto"><div class="manifesto-photo"></div><div><span>DE ONDE A GENTE VEM</span><h2>Roupa com sotaque, atitude sem fronteira.</h2><p>A TROPICO nasce do encontro entre a energia das ruas e a força da natureza brasileira. Criamos peças essenciais, duráveis e livres de estação.</p><a class="text-link" href="${route('produtos/')}">CONHEÇA NOSSA HISTÓRIA →</a></div></section>
   <section class="section"><div class="section-heading"><div><span>ACABOU DE CHEGAR</span><h2>Novos ritmos</h2></div></div><div class="product-grid">${newest.map(p=>productCard(p)).join('')}</div></section>
   <section class="values"><div><b>01</b><h3>Feito aqui</h3><p>Produção e criação brasileiras.</p></div><div><b>02</b><h3>Menos, melhor</h3><p>Peças versáteis e duradouras.</p></div><div><b>03</b><h3>Para todo corpo</h3><p>Modelagens livres e inclusivas.</p></div></section>`;
 }
@@ -102,7 +107,7 @@ function renderCatalog(root){
 function variantStock(productId,size,color){return 3+(PRODUCTS.findIndex(p=>p.id===productId)+SIZES.indexOf(size)+COLORS.findIndex(c=>c.name===color)+3)%12}
 
 function renderProduct(root){
-  const product=getProduct(new URLSearchParams(location.search).get('id'))||PRODUCTS[0];document.title=`${product.name} — TRÓPICO`;
+  const product=getProduct(new URLSearchParams(location.search).get('id'))||PRODUCTS[0];document.title=`${product.name} — TROPICO`;
   const variants=SIZES.flatMap(size=>COLORS.map(color=>({size,color,stock:variantStock(product.id,size,color.name)})));
   const related=PRODUCTS.filter(p=>p.categorySlug===product.categorySlug&&p.id!==product.id).slice(0,4);
   root.innerHTML=`<section class="product-detail"><div class="gallery"><img src="${product.image}" alt="${escapeHtml(product.name)}"><img src="${product.image}" alt="${escapeHtml(product.name)} — detalhe" loading="lazy"></div><div class="product-info"><span>${product.category.toUpperCase()}</span><h1>${product.name}</h1><strong class="price">${money(product.price)}</strong><p>${product.description}</p><form data-add-form><label>Tamanho e cor</label><div class="variant-list">${variants.map((v,i)=>`<label class="variant"><input type="radio" name="variant" value="${v.size}|${v.color.name}" ${i===0?'checked':''}><span><i style="--swatch:${v.color.hex}"></i>${v.size} · ${v.color.name} <small>${v.stock} un.</small></span></label>`).join('')}</div><div class="qty-row"><label for="quantity">Quantidade<input class="qty" id="quantity" name="quantity" type="number" min="1" max="12" value="1"></label><button class="btn">Adicionar à sacola →</button></div></form><div class="product-notes"><span>✦ Frete grátis acima de R$ 399</span><span>↺ Primeira troca grátis</span><span>◌ Pagamento 100% seguro (simulado)</span></div></div></section>${related.length?`<section class="section"><div class="section-heading"><div><span>COMBINA COM</span><h2>Você também pode gostar</h2></div></div><div class="product-grid">${related.map(p=>productCard(p)).join('')}</div></section>`:''}`;
@@ -126,7 +131,7 @@ function renderCheckout(root){
   const profile=read(STORAGE.profile,{});let coupon='';
   function totals(){const subtotal=cartSubtotal();const discount=coupon==='BEMVINDO10'?subtotal*.1:0;const shipping=shippingFor(subtotal);return{subtotal,discount,shipping,total:subtotal-discount+shipping}}
   function summary(){const t=totals();return `<span>SEU PEDIDO</span>${getCart().map(item=>{const p=getProduct(item.productId);return `<div class="mini-item"><img src="${p.image}" alt=""><p>${item.quantity}× ${p.name}<small>${item.size} · ${item.color}</small></p><b>${money(p.price*item.quantity)}</b></div>`}).join('')}<hr><div><p>Subtotal</p><b>${money(t.subtotal)}</b></div><div><p>Desconto</p><b>− ${money(t.discount)}</b></div><div><p>Frete</p><b>${t.shipping?money(t.shipping):'Grátis'}</b></div><hr><div class="total-line"><h3>Total</h3><h3>${money(t.total)}</h3></div><button class="btn wide" type="submit">Confirmar pedido</button><small class="secure-note">Checkout demonstrativo. Nenhuma cobrança será realizada.</small>`}
-  root.innerHTML=`<section class="page-shell checkout static-checkout"><div class="page-title"><span>ÚLTIMA ETAPA</span><h1>Finalizar pedido</h1></div><form class="checkout-layout" data-checkout><div><section class="panel"><h2>1. Entrega</h2><div class="form-row"><label>Nome completo<input name="name" value="${escapeHtml(profile.name||'')}" required></label><label>E-mail<input type="email" name="email" value="${escapeHtml(profile.email||'')}" required></label></div><div class="form-row"><label>CEP<input name="zip" value="${escapeHtml(profile.zip||'')}" required maxlength="9" placeholder="00000-000"></label><label>Endereço<input name="address" value="${escapeHtml(profile.address||'')}" required></label></div><div class="form-row"><label>Número<input name="number" value="${escapeHtml(profile.number||'')}" required></label><label>Cidade / UF<input name="city" value="${escapeHtml(profile.city||'')}" required></label></div><div class="shipping-line"><span>Entrega TRÓPICO · até 6 dias úteis</span><b data-shipping>${shippingFor(cartSubtotal())?money(shippingFor(cartSubtotal())):'Grátis'}</b></div></section><section class="panel"><h2>2. Cupom</h2><div class="coupon-row"><input name="coupon" placeholder="Código do cupom"><button class="btn outline" type="button" data-coupon>Aplicar</button></div><small>Experimente BEMVINDO10</small><span class="coupon-feedback" data-coupon-feedback></span></section><section class="panel"><h2>3. Pagamento simulado</h2><p class="notice">Ambiente de demonstração. Não informe dados reais de cartão.</p><div class="payment-grid">${[['pix','PIX'],['credito','Crédito'],['debito','Débito'],['boleto','Boleto']].map(([value,label],i)=>`<label class="choice"><input type="radio" name="payment" value="${value}" ${i===0?'checked':''}><span>${label}</span></label>`).join('')}</div><label>Parcelas<select name="installments"><option>1x sem juros</option><option>2x sem juros</option><option>3x sem juros</option></select></label></section></div><aside class="summary" data-summary>${summary()}</aside></form></section>`;
+  root.innerHTML=`<section class="page-shell checkout static-checkout"><div class="page-title"><span>ÚLTIMA ETAPA</span><h1>Finalizar pedido</h1></div><form class="checkout-layout" data-checkout><div><section class="panel"><h2>1. Entrega</h2><div class="form-row"><label>Nome completo<input name="name" value="${escapeHtml(profile.name||'')}" required></label><label>E-mail<input type="email" name="email" value="${escapeHtml(profile.email||'')}" required></label></div><div class="form-row"><label>CEP<input name="zip" value="${escapeHtml(profile.zip||'')}" required maxlength="9" placeholder="00000-000"></label><label>Endereço<input name="address" value="${escapeHtml(profile.address||'')}" required></label></div><div class="form-row"><label>Número<input name="number" value="${escapeHtml(profile.number||'')}" required></label><label>Cidade / UF<input name="city" value="${escapeHtml(profile.city||'')}" required></label></div><div class="shipping-line"><span>Entrega TROPICO · até 6 dias úteis</span><b data-shipping>${shippingFor(cartSubtotal())?money(shippingFor(cartSubtotal())):'Grátis'}</b></div></section><section class="panel"><h2>2. Cupom</h2><div class="coupon-row"><input name="coupon" placeholder="Código do cupom"><button class="btn outline" type="button" data-coupon>Aplicar</button></div><small>Experimente BEMVINDO10</small><span class="coupon-feedback" data-coupon-feedback></span></section><section class="panel"><h2>3. Pagamento simulado</h2><p class="notice">Ambiente de demonstração. Não informe dados reais de cartão.</p><div class="payment-grid">${[['pix','PIX'],['credito','Crédito'],['debito','Débito'],['boleto','Boleto']].map(([value,label],i)=>`<label class="choice"><input type="radio" name="payment" value="${value}" ${i===0?'checked':''}><span>${label}</span></label>`).join('')}</div><label>Parcelas<select name="installments"><option>1x sem juros</option><option>2x sem juros</option><option>3x sem juros</option></select></label></section></div><aside class="summary" data-summary>${summary()}</aside></form></section>`;
   root.querySelector('[data-coupon]').addEventListener('click',()=>{const value=root.querySelector('[name=coupon]').value.trim().toUpperCase();const feedback=root.querySelector('[data-coupon-feedback]');if(value==='BEMVINDO10'){coupon=value;feedback.textContent='Cupom aplicado: 10% de desconto.';feedback.classList.remove('error');toast('Cupom BEMVINDO10 aplicado!')}else{coupon='';feedback.textContent=value?'Cupom inválido. Use BEMVINDO10.':'';feedback.classList.toggle('error',Boolean(value))}root.querySelector('[data-summary]').innerHTML=summary()});
   root.querySelector('[data-checkout]').addEventListener('submit',event=>{event.preventDefault();const data=Object.fromEntries(new FormData(event.currentTarget));const saved={name:data.name,email:data.email,zip:data.zip,address:data.address,number:data.number,city:data.city};write(STORAGE.profile,saved);const order={number:`TRP-${String(Date.now()).slice(-6)}`,date:new Date().toISOString(),items:getCart(),...totals(),payment:data.payment};const orders=read(STORAGE.orders,[]);orders.unshift(order);write(STORAGE.orders,orders);write(STORAGE.cart,[]);updateCartBadge();renderSuccess(root,order)});
 }
@@ -141,7 +146,7 @@ function renderAccount(root){
 
 function init(){
   renderChrome();const root=document.querySelector('[data-page-root]');if(!root)return;
-  const page=document.body.dataset.page;({home:renderHome,catalog:renderCatalog,product:renderProduct,cart:renderCart,checkout:renderCheckout,account:renderAccount}[page]||renderHome)(root);
+  const page=document.body.dataset.page;const titles={home:'TROPICO',catalog:'Catálogo — TROPICO',cart:'Sacola — TROPICO',checkout:'Checkout — TROPICO',account:'Minha conta — TROPICO'};if(titles[page])document.title=titles[page];({home:renderHome,catalog:renderCatalog,product:renderProduct,cart:renderCart,checkout:renderCheckout,account:renderAccount}[page]||renderHome)(root);
 }
 
 init();
