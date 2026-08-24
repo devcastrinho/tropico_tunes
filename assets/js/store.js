@@ -7,8 +7,7 @@ const PRODUCTS = [
   {id:'jaqueta-chuva-verao',name:'Jaqueta Chuva de Verão',category:'Jaquetas',categorySlug:'jaquetas',description:'Corta-vento compacto com acabamento repelente.',price:399.90,featured:false,image:'https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?auto=format&fit=crop&w=900&q=80'},
   {id:'bone-brisa',name:'Boné Brisa',category:'Acessórios',categorySlug:'acessorios',description:'Boné de seis painéis com bordado minimalista.',price:119.90,featured:false,image:'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=900&q=80'},
   {id:'camisa-amazonia',name:'Camisa Amazônia',category:'Camisas',categorySlug:'camisas',description:'Viscose fluida com padronagem botânica discreta.',price:249.90,featured:false,image:'https://images.unsplash.com/photo-1603252109303-2751441dd157?auto=format&fit=crop&w=900&q=80'},
-  {id:'regata-mare',name:'Regata Maré',category:'Camisetas',categorySlug:'camisetas',description:'Regata canelada de algodão brasileiro.',price:109.90,featured:false,image:'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?auto=format&fit=crop&w=900&q=80'},
-  {id:'ecobag-raizes',name:'Ecobag Raízes',category:'Acessórios',categorySlug:'acessorios',description:'Lona de algodão com alças reforçadas.',price:79.90,featured:false,image:'assets/images/ecobag-raizes.png'}
+  {id:'regata-mare',name:'Regata Maré',category:'Camisetas',categorySlug:'camisetas',description:'Regata canelada de algodão brasileiro.',price:109.90,featured:false,image:'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?auto=format&fit=crop&w=900&q=80'}
 ];
 
 const COLORS=[{name:'Preto',hex:'#171717'},{name:'Off-white',hex:'#EDE9DF'},{name:'Verde Mata',hex:'#244A35'}];
@@ -23,7 +22,7 @@ document.documentElement.dataset.theme=preferredTheme;
 const money=value=>Number(value).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}};
 const write=(key,value)=>localStorage.setItem(key,JSON.stringify(value));
-const getCart=()=>read(STORAGE.cart,[]);
+const getCart=()=>read(STORAGE.cart,[]).filter(item=>PRODUCTS.some(product=>product.id===item.productId));
 const getProduct=id=>PRODUCTS.find(product=>product.id===id);
 const cartCount=()=>getCart().reduce((sum,item)=>sum+item.quantity,0);
 const cartSubtotal=()=>getCart().reduce((sum,item)=>sum+(getProduct(item.productId)?.price||0)*item.quantity,0);
@@ -107,7 +106,9 @@ function renderCatalog(root){
 function variantStock(productId,size,color){return 3+(PRODUCTS.findIndex(p=>p.id===productId)+SIZES.indexOf(size)+COLORS.findIndex(c=>c.name===color)+3)%12}
 
 function renderProduct(root){
-  const product=getProduct(new URLSearchParams(location.search).get('id'))||PRODUCTS[0];document.title=`${product.name} — TROPICO`;
+  const product=getProduct(new URLSearchParams(location.search).get('id'));
+  if(!product){document.title='Produto não encontrado — TROPICO';root.innerHTML=`<section class="page-shell"><div class="empty"><h2>Essa peça não está mais disponível.</h2><p>Explore as outras peças da coleção.</p><a class="btn" href="${route('produtos/')}">Ver catálogo</a></div></section>`;return}
+  document.title=`${product.name} — TROPICO`;
   const variants=SIZES.flatMap(size=>COLORS.map(color=>({size,color,stock:variantStock(product.id,size,color.name)})));
   const related=PRODUCTS.filter(p=>p.categorySlug===product.categorySlug&&p.id!==product.id).slice(0,4);
   root.innerHTML=`<section class="product-detail"><div class="gallery"><img src="${product.image}" alt="${escapeHtml(product.name)}"><img src="${product.image}" alt="${escapeHtml(product.name)} — detalhe" loading="lazy"></div><div class="product-info"><span>${product.category.toUpperCase()}</span><h1>${product.name}</h1><strong class="price">${money(product.price)}</strong><p>${product.description}</p><form data-add-form><label>Tamanho e cor</label><div class="variant-list">${variants.map((v,i)=>`<label class="variant"><input type="radio" name="variant" value="${v.size}|${v.color.name}" ${i===0?'checked':''}><span><i style="--swatch:${v.color.hex}"></i>${v.size} · ${v.color.name} <small>${v.stock} un.</small></span></label>`).join('')}</div><div class="qty-row"><label for="quantity">Quantidade<input class="qty" id="quantity" name="quantity" type="number" min="1" max="12" value="1"></label><button class="btn">Adicionar à sacola →</button></div></form><div class="product-notes"><span>✦ Frete grátis acima de R$ 399</span><span>↺ Primeira troca grátis</span><span>◌ Pagamento 100% seguro (simulado)</span></div></div></section>${related.length?`<section class="section"><div class="section-heading"><div><span>COMBINA COM</span><h2>Você também pode gostar</h2></div></div><div class="product-grid">${related.map(p=>productCard(p)).join('')}</div></section>`:''}`;
