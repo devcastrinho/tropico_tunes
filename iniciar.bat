@@ -20,6 +20,14 @@ echo Mantenha esta janela aberta.
 echo Pressione Ctrl+C para encerrar o sistema.
 echo.
 
-".venv\Scripts\python.exe" -m flask --app run.py run --debug
-pause
+set "DATABASE_URL=sqlite:///tropico.db"
+".venv\Scripts\python.exe" -m flask --app run.py seed
+if errorlevel 1 (
+  echo.
+  echo Nao foi possivel preparar o banco local.
+  pause
+  exit /b 1
+)
 
+".venv\Scripts\python.exe" -m flask --app run.py run
+pause

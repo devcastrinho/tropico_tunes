@@ -21,7 +21,44 @@ PRODUCTS = [
 ]
 
 
+def sync_catalog():
+    """Atualiza os produtos do catálogo sem apagar dados operacionais."""
+    categories = {}
+    for name in sorted({row[2] for row in PRODUCTS}):
+        category = Category.query.filter_by(name=name).first()
+        if category is None:
+            category = Category(name=name, slug=name.lower().replace("ó", "o").replace("é", "e").replace(" ", "-"))
+            db.session.add(category)
+            db.session.flush()
+        categories[name] = category
+
+    updated = 0
+    for name, slug, category_name, description, price, featured, image in PRODUCTS:
+        product = Product.query.filter_by(slug=slug).first()
+        if product is None:
+            continue
+        product.name = name
+        product.category_id = categories[category_name].id
+        product.description = description
+        product.price = Decimal(price)
+        product.featured = featured
+        if product.images:
+            product.images[0].url = image
+            product.images[0].alt_text = name
+        else:
+            product.images.append(ProductImage(url=image, alt_text=name))
+        updated += 1
+    return updated
+
+
 def register_commands(app):
+    @app.cli.command("sync-catalog")
+    def sync_catalog_command():
+        db.create_all()
+        updated = sync_catalog()
+        db.session.commit()
+        click.echo(f"Catálogo sincronizado: {updated} produtos atualizados.")
+
     @app.cli.command("seed")
     @click.option("--reset", is_flag=True, help="Recria todas as tabelas.")
     def seed(reset):
@@ -29,7 +66,9 @@ def register_commands(app):
             db.drop_all()
         db.create_all()
         if User.query.first():
-            click.echo("O banco já possui dados.")
+            updated = sync_catalog()
+            db.session.commit()
+            click.echo(f"Banco existente preservado; {updated} produtos atualizados.")
             return
         admin = User(name="Admin TRÓPICO", email="admin@tropico.com.br", role="admin", phone="11999990000")
         admin.set_password("Admin@123")
