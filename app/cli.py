@@ -8,16 +8,16 @@ from .models import Address, Category, Color, Coupon, Product, ProductImage, Pro
 
 
 PRODUCTS = [
-    ("Camiseta Sol Nascente", "camiseta-sol-nascente", "Camisetas", "Algodão premium, modelagem ampla e estampa solar.", "149.90", True, "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=80"),
-    ("Camiseta Mata Atlântica", "camiseta-mata-atlantica", "Camisetas", "Malha encorpada com tingimento verde profundo.", "159.90", True, "https://images.unsplash.com/photo-1503341504253-dff4815485f1?auto=format&fit=crop&w=900&q=80"),
-    ("Moletom Horizonte", "moletom-horizonte", "Moletons", "Moletom felpado oversized para noites tropicais.", "329.90", True, "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=900&q=80"),
-    ("Calça Cargo Cerrado", "calca-cargo-cerrado", "Calças", "Sarja resistente e bolsos utilitários.", "289.90", True, "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?auto=format&fit=crop&w=900&q=80"),
-    ("Short Orla", "short-orla", "Shorts", "Leve, funcional e pronto para o calor.", "189.90", False, "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&w=900&q=80"),
-    ("Jaqueta Chuva de Verão", "jaqueta-chuva-verao", "Jaquetas", "Corta-vento compacto com acabamento repelente.", "399.90", False, "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?auto=format&fit=crop&w=900&q=80"),
-    ("Boné Brisa", "bone-brisa", "Acessórios", "Boné de seis painéis com bordado minimalista.", "119.90", False, "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=900&q=80"),
-    ("Camisa Amazônia", "camisa-amazonia", "Camisas", "Viscose fluida com padronagem botânica discreta.", "249.90", False, "https://images.unsplash.com/photo-1603252109303-2751441dd157?auto=format&fit=crop&w=900&q=80"),
-    ("Regata Maré", "regata-mare", "Camisetas", "Regata canelada de algodão brasileiro.", "109.90", False, "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?auto=format&fit=crop&w=900&q=80"),
-    ("Ecobag Raízes", "ecobag-raizes", "Acessórios", "Lona de algodão com alças reforçadas.", "79.90", False, "https://images.unsplash.com/photo-1597484662317-9bd7bdda2907?auto=format&fit=crop&w=900&q=80"),
+    ("Camiseta Preta TROPICO", "camiseta-sol-nascente", "Camisetas", "Camiseta preta em algodão, com logo TROPICO aplicado no peito.", "149.90", True, "/static/images/products/camiseta-sol-nascente.jpeg"),
+    ("Camiseta Branca TROPICO", "camiseta-mata-atlantica", "Camisetas", "Camiseta branca em algodão, com logo TROPICO aplicado no peito.", "159.90", True, "/static/images/products/camiseta-mata-atlantica.jpeg"),
+    ("Moletom Preto TROPICO", "moletom-horizonte", "Moletons", "Moletom preto felpado com capuz, bolso canguru e logo TROPICO.", "329.90", True, "/static/images/products/moletom-horizonte.png"),
+    ("Calça Cargo Preta", "calca-cargo-cerrado", "Calças", "Calça cargo preta de modelagem ampla, com bolsos utilitários.", "289.90", True, "/static/images/products/calca-cargo-cerrado.jpeg"),
+    ("Short Street", "short-orla", "Shorts", "Short leve e funcional para o dia a dia.", "189.90", False, "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?auto=format&fit=crop&w=900&q=80"),
+    ("Corta-Vento Preto TROPICO", "jaqueta-chuva-verao", "Jaquetas", "Corta-vento preto com capuz, acabamento repelente e logo TROPICO.", "399.90", False, "/static/images/products/jaqueta-chuva-verao.jpeg"),
+    ("Boné Preto", "bone-brisa", "Acessórios", "Boné preto de seis painéis com acabamento estonado.", "119.90", False, "/static/images/products/bone-brisa.jpeg"),
+    ("Camisa Casual", "camisa-amazonia", "Camisas", "Camisa casual em viscose leve e confortável.", "249.90", False, "https://images.unsplash.com/photo-1603252109303-2751441dd157?auto=format&fit=crop&w=900&q=80"),
+    ("Regata Branca TROPICO", "regata-mare", "Camisetas", "Regata branca em algodão, com logo TROPICO aplicado no peito.", "109.90", False, "/static/images/products/regata-mare.jpeg"),
+    ("Ecobag TROPICO", "ecobag-raizes", "Acessórios", "Ecobag em lona de algodão cru, com estampa frontal TROPICO.", "79.90", False, "/static/images/products/ecobag-raizes.jpeg"),
 ]
 
 
@@ -58,4 +58,3 @@ def register_commands(app):
         db.session.add(Coupon(code="BEMVINDO10", discount_type="percent", value=10, active=True, max_uses=500, valid_until=datetime.now(timezone.utc) + timedelta(days=365)))
         db.session.commit()
         click.echo("Dados criados. Admin: admin@tropico.com.br / Admin@123")
-
